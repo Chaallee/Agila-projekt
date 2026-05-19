@@ -24,4 +24,15 @@ export const DeletePlant = () => {};
 
 export const EditPlant = () => {};
 
-export const ViewPlant = () => {};
+export const GetAllPlants = () => {
+  let plants;
+
+  function Load() {
+    plants = JSON.parse(localStorage.getItem("plants") || "[]");
+  }
+
+  if (localStorage.getItem("plants") !== null) {
+    return Load();
+  } 
+  
+};
