@@ -16,6 +16,8 @@ export const AddPlant = (
     isWatered: false,
     nextInterval: new Date(new Date().setDate(new Date().getDate() + interval)),
   };
+
+  return NewPlant;
 };
 
 export const DeletePlant = () => {};
