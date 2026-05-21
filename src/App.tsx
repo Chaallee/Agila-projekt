@@ -2,16 +2,29 @@ import { useEffect, useRef, useState } from "react";
 import { AddPlant, GetAllPlants } from "./services/plantService";
 import type { Plant } from "./types/plant";
 import PlantCardList from "./components/PlantCardList";
-
 function App() {
+  const [imageBase64, setImageBase64] = useState("");
   const [plants, setPlants] = useState<Plant[]>(GetAllPlants());
 
   const plantNameText = useRef<HTMLInputElement>(null);
   const plantTypeText = useRef<HTMLInputElement>(null);
   const intervalText = useRef<HTMLInputElement>(null);
-  const imageUrlText = useRef<HTMLInputElement>(null);
+  const imageInputRef = useRef<HTMLInputElement>(null);
 
-    // useEffect(() => {setPlants(GetAllPlants());},[]);
+  const HandleImageChange = () => {
+    const file = imageInputRef.current?.files?.[0];
+
+    if (!file)
+        return;
+
+    const reader = new FileReader();
+
+    reader.onloadend = () => {
+        setImageBase64(reader.result as string);
+    };
+
+    reader.readAsDataURL(file);
+  };
 
   const handleAddPlant = () => {
 
@@ -19,12 +32,12 @@ function App() {
       plantNameText.current &&
       plantTypeText.current &&
       intervalText.current &&
-      imageUrlText.current
+      imageInputRef.current
     ) {
       const plantName = plantNameText.current.value;
       const plantType = plantTypeText.current.value;
       const interval = Number.parseInt(intervalText.current.value);
-      const imageUrl = imageUrlText.current.value;
+      const imageUrl = imageInputRef.current.value;
 
       const plant = AddPlant(plantName, plantType, interval, imageUrl);
       const updatedPlants = [...plants,plant]
@@ -33,6 +46,7 @@ function App() {
       plantNameText.current.value = "";
 
     }
+
   };
 
   return (
@@ -58,7 +72,9 @@ function App() {
 
         <div className="field">
           <p>Image URL</p>
-          <input type="text" ref={imageUrlText}></input>
+          <input type="file" accept="image/*" ref={imageInputRef} onChange={HandleImageChange} />
+          
+          {imageBase64 && <img width={50} height={50} src={imageBase64} />}
         </div>
 
         <button onClick={handleAddPlant}>Add plant</button>
