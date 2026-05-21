@@ -1,5 +1,7 @@
+import type { Guid } from "guid-typescript";
+
 export interface Plant {
-  id: number;
+  id: Guid;
   name: string;
   type: string;
   isWatered: boolean;

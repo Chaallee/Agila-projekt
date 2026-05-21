@@ -1,122 +1,92 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
-
+import { useEffect, useRef, useState } from "react";
+import { AddPlant, GetAllPlants } from "./services/plantService";
+import type { Plant } from "./types/plant";
+import PlantCardList from "./components/PlantCardList";
 function App() {
-  const [count, setCount] = useState(0)
+  const [imageBase64, setImageBase64] = useState("");
+  const [plants, setPlants] = useState<Plant[]>(GetAllPlants());
+
+  const plantNameText = useRef<HTMLInputElement>(null);
+  const plantTypeText = useRef<HTMLInputElement>(null);
+  const intervalText = useRef<HTMLInputElement>(null);
+  const imageInputRef = useRef<HTMLInputElement>(null);
+
+  const HandleImageChange = () => {
+    const file = imageInputRef.current?.files?.[0];
+
+    if (!file) return;
+
+    const reader = new FileReader();
+
+    reader.onloadend = () => {
+      setImageBase64(reader.result as string);
+    };
+
+    reader.readAsDataURL(file);
+  };
+
+  const handleAddPlant = () => {
+    if (
+      plantNameText.current &&
+      plantTypeText.current &&
+      intervalText.current &&
+      imageInputRef.current
+    ) {
+      const plantName = plantNameText.current.value;
+      const plantType = plantTypeText.current.value;
+      const interval = Number.parseInt(intervalText.current.value);
+
+      const plant = AddPlant(plantName, plantType, interval, imageBase64);
+      const updatedPlants = [...plants, plant];
+      setPlants(updatedPlants);
+      localStorage.setItem("plants", JSON.stringify(updatedPlants));
+      plantNameText.current.value = "";
+    }
+  };
+  const DeletePlant = (plant: Plant) => {
+    const updatedPlants = plants.filter((p) => p.id !== plant.id);
+    setPlants(updatedPlants);
+    localStorage.setItem("plants", JSON.stringify(updatedPlants));
+  };
 
   return (
     <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+      <h1>Blommor</h1>
+      <div>
+        <h1>Add plant</h1>
 
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
+        <div className="field">
+          <p>Plant name</p>
+          <input type="text" ref={plantNameText}></input>
         </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
+        <div className="field">
+          <p>Plant type</p>
+          <input type="text" ref={plantTypeText}></input>
+        </div>
+
+        <div className="field">
+          <p>Watering interval</p>
+          <input type="number" ref={intervalText}></input>
+        </div>
+
+        <div className="field">
+          <p>Image URL</p>
+          <input
+            type="file"
+            accept="image/*"
+            ref={imageInputRef}
+            onChange={HandleImageChange}
+          />
+
+          {imageBase64 && <img width={50} height={50} src={imageBase64} />}
+        </div>
+
+        <button onClick={handleAddPlant}>Add plant</button>
+      </div>
+      <PlantCardList plants={plants} onDelete={DeletePlant} />
     </>
-  )
+  );
 }
 
-export default App
+export default App;
