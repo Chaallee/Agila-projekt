@@ -1,18 +1,19 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AddPlant, GetAllPlants } from "./services/plantService";
 import type { Plant } from "./types/plant";
 import PlantCardList from "./components/PlantCardList";
 
 function App() {
-  const plants: Array<Plant> = GetAllPlants();
+  const [plants, setPlants] = useState<Plant[]>(GetAllPlants());
 
   const plantNameText = useRef<HTMLInputElement>(null);
   const plantTypeText = useRef<HTMLInputElement>(null);
   const intervalText = useRef<HTMLInputElement>(null);
   const imageUrlText = useRef<HTMLInputElement>(null);
 
+    // useEffect(() => {setPlants(GetAllPlants());},[]);
+
   const handleAddPlant = () => {
-    let plant;
 
     if (
       plantNameText.current &&
@@ -25,9 +26,12 @@ function App() {
       const interval = Number.parseInt(intervalText.current.value);
       const imageUrl = imageUrlText.current.value;
 
-      plant = AddPlant(plantName, plantType, interval, imageUrl);
-      plants.push(plant);
-      localStorage.setItem("plants", JSON.stringify(plants))
+      const plant = AddPlant(plantName, plantType, interval, imageUrl);
+      const updatedPlants = [...plants,plant]
+      setPlants(updatedPlants)
+      localStorage.setItem("plants", JSON.stringify(updatedPlants))
+      plantNameText.current.value = "";
+
     }
   };
 

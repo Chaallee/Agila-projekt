@@ -17,7 +17,7 @@ export const AddPlant = (
     isWatered: false,
     nextInterval: new Date(new Date().setDate(new Date().getDate() + interval)),
   };
-  const PlantList 
+  
   return NewPlant;
 };
 
@@ -25,18 +25,6 @@ export const DeletePlant = () => {};
 
 export const EditPlant = () => {};
 
-
-export const GetAllPlants = () => {
-  let plants : Array<Plant>
-
-
-  function Load() {
-    plants = JSON.parse(localStorage.getItem("plants") || "[]");
-    return plants;
-}
-
-  if (localStorage.getItem("plants") !== null) {
-    return Load();
-  } 
-  
+export const GetAllPlants = (): Plant[] => {
+  return JSON.parse(localStorage.getItem("plants") || "[]");
 };
