@@ -1,19 +1,17 @@
-import type { Plant } from "../types/plant"
-import PlantCard from "./PlantCard"
+import type { Plant } from "../types/plant";
+import PlantCard from "./PlantCard";
 
-interface PlantCardListProps{
-    plants: Plant[]
+interface PlantCardListProps {
+  plants: Plant[];
+  onDelete: (plant: Plant) => void;
 }
 
-const PlantCardList = ({plants}: PlantCardListProps) =>{
-    const List = plants.map(plant =>{
-        return(<PlantCard plant={plant}/>)
+const PlantCardList = ({ plants, onDelete }: PlantCardListProps) => {
+  const List = plants.map((plant) => {
+    return <PlantCard plant={plant} onDelete={onDelete} />;
+  });
 
-    })  
-    
-    return(<> {List} </>)
-}
+  return <> {List} </>;
+};
 
-
-
-export default PlantCardList
+export default PlantCardList;

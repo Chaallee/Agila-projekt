@@ -14,20 +14,18 @@ function App() {
   const HandleImageChange = () => {
     const file = imageInputRef.current?.files?.[0];
 
-    if (!file)
-        return;
+    if (!file) return;
 
     const reader = new FileReader();
 
     reader.onloadend = () => {
-        setImageBase64(reader.result as string);
+      setImageBase64(reader.result as string);
     };
 
     reader.readAsDataURL(file);
   };
 
   const handleAddPlant = () => {
-
     if (
       plantNameText.current &&
       plantTypeText.current &&
@@ -37,16 +35,18 @@ function App() {
       const plantName = plantNameText.current.value;
       const plantType = plantTypeText.current.value;
       const interval = Number.parseInt(intervalText.current.value);
-      const imageUrl = imageInputRef.current.value;
 
-      const plant = AddPlant(plantName, plantType, interval, imageUrl);
-      const updatedPlants = [...plants,plant]
-      setPlants(updatedPlants)
-      localStorage.setItem("plants", JSON.stringify(updatedPlants))
+      const plant = AddPlant(plantName, plantType, interval, imageBase64);
+      const updatedPlants = [...plants, plant];
+      setPlants(updatedPlants);
+      localStorage.setItem("plants", JSON.stringify(updatedPlants));
       plantNameText.current.value = "";
-
     }
-
+  };
+  const DeletePlant = (plant: Plant) => {
+    const updatedPlants = plants.filter((p) => p.id !== plant.id);
+    setPlants(updatedPlants);
+    localStorage.setItem("plants", JSON.stringify(updatedPlants));
   };
 
   return (
@@ -72,14 +72,19 @@ function App() {
 
         <div className="field">
           <p>Image URL</p>
-          <input type="file" accept="image/*" ref={imageInputRef} onChange={HandleImageChange} />
-          
+          <input
+            type="file"
+            accept="image/*"
+            ref={imageInputRef}
+            onChange={HandleImageChange}
+          />
+
           {imageBase64 && <img width={50} height={50} src={imageBase64} />}
         </div>
 
         <button onClick={handleAddPlant}>Add plant</button>
       </div>
-      <PlantCardList plants={plants}></PlantCardList>
+      <PlantCardList plants={plants} onDelete={DeletePlant} />
     </>
   );
 }
