@@ -1,9 +1,10 @@
 import { useRef, useState } from "react";
-import { AddPlant } from "./services/plantService";
+import { AddPlant, GetAllPlants } from "./services/plantService";
 import type { Plant } from "./types/plant";
+import PlantCardList from "./components/PlantCardList";
 
 function App() {
-  const plants: Array<Plant> = [];
+  const plants: Array<Plant> = GetAllPlants();
 
   const plantNameText = useRef<HTMLInputElement>(null);
   const plantTypeText = useRef<HTMLInputElement>(null);
@@ -58,6 +59,7 @@ function App() {
 
         <button onClick={handleAddPlant}>Add plant</button>
       </div>
+      <PlantCardList plants={plants}></PlantCardList>
     </>
   );
 }
