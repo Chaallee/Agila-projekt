@@ -9,6 +9,17 @@ interface PlantCardProps {
 }
 
 const PlantCard = ({ plant, onDelete, onWatered, onEdit }: PlantCardProps) => {
+
+  const now = new Date();
+  const diffMs =  new Date(plant.nextInterval).getTime() - now.getTime();
+  const oneDayMs = 24 * 60 * 60 * 1000;
+
+  let nextIntervalTextColor = "grey"
+  
+  if (diffMs < oneDayMs) {
+    nextIntervalTextColor = "red"
+  }
+  
   return (
     <div className="card">
       {plant.imageURL && (
@@ -17,7 +28,9 @@ const PlantCard = ({ plant, onDelete, onWatered, onEdit }: PlantCardProps) => {
       <h3>{plant.name}</h3>
       <p>{plant.type}</p>
       <p>Vattningsintervall: {plant.interval} dagar</p>
-      <p>Nästa vattning: {new Date(plant.nextInterval).toLocaleDateString("sv-SE")}</p>
+
+      <p style={{color : nextIntervalTextColor}}>Nästa vattning: {new Date(plant.nextInterval).toLocaleDateString("sv-SE")}</p>
+
       <div className="card-actions">
         <button onClick={() => onEdit(plant)}>Redigera</button>
         <button onClick={() => onWatered(plant)}>Vattnad</button>
