@@ -51,6 +51,7 @@ function App() {
 
   const handleWaterPlant = (plant: Plant) => {
     plant.isWatered = true;
+    plant.nextInterval = new Date(new Date().setDate(new Date().getDate() + plant.interval))
     localStorage.setItem("plants", JSON.stringify(plants));
   };
 
@@ -89,7 +90,7 @@ function App() {
 
         <button onClick={handleAddPlant}>Add plant</button>
       </div>
-      <PlantCardList plants={plants} onDelete={DeletePlant} />
+      <PlantCardList plants={plants} onDelete={DeletePlant} onWatered={handleWaterPlant} />
     </>
   );
 }
