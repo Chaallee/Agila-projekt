@@ -11,16 +11,18 @@ interface PlantCardProps {
 const PlantCard = ({ plant, onDelete, onWatered, onEdit }: PlantCardProps) => {
   return (
     <div className="card">
-      <p>{plant.name}</p>
-      <p>{plant.type}</p>
-      <p>Vattningsintervall: {plant.interval} Dagar</p>
-      <p>Nästa vattning: {new Date(plant.nextInterval).toLocaleDateString()}</p>
       {plant.imageURL && (
-        <img src={plant.imageURL} className="plantImage"></img>
+        <img src={plant.imageURL} className="plantImage" alt={plant.name} />
       )}
-      <button onClick={() => onEdit(plant)}>Redigera</button>
-      <button onClick={() => onWatered(plant)}>Vattnad</button>
-      <button onClick={() => onDelete(plant)}>Ta bort</button>
+      <h3>{plant.name}</h3>
+      <p>{plant.type}</p>
+      <p>Vattningsintervall: {plant.interval} dagar</p>
+      <p>Nästa vattning: {new Date(plant.nextInterval).toLocaleDateString("sv-SE")}</p>
+      <div className="card-actions">
+        <button onClick={() => onEdit(plant)}>Redigera</button>
+        <button onClick={() => onWatered(plant)}>Vattnad</button>
+        <button onClick={() => onDelete(plant)}>Ta bort</button>
+      </div>
     </div>
   );
 };
