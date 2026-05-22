@@ -5,6 +5,7 @@ import PlantCardList from "./components/PlantCardList";
 function App() {
   const [imageBase64, setImageBase64] = useState("");
   const [plants, setPlants] = useState<Plant[]>(GetAllPlants());
+  const [plantToEdit, setPlantToEdit] = useState<Plant>();
 
   const plantNameText = useRef<HTMLInputElement>(null);
   const plantTypeText = useRef<HTMLInputElement>(null);
@@ -49,6 +50,55 @@ function App() {
     localStorage.setItem("plants", JSON.stringify(updatedPlants));
   };
 
+  const handleWaterPlant = (plant: Plant) => {
+    const updatedPlants = plants.map((p) =>
+      p.id === plant.id
+        ? {
+            ...p,
+            isWatered: true,
+            nextInterval: new Date(
+              new Date().setDate(new Date().getDate() + p.interval),
+            ),
+          }
+        : p,
+    );
+    setPlants(updatedPlants);
+    localStorage.setItem("plants", JSON.stringify(updatedPlants));
+  };
+
+  const handleEditPlant = (plant: Plant) => {
+    if (plantNameText.current) {
+      plantNameText.current.value = plant.name;
+      setPlantToEdit(plant);
+    }
+  };
+
+  const acceptEditPlant = () => {
+    if (
+      plantNameText.current &&
+      plantTypeText.current &&
+      intervalText.current &&
+      imageInputRef.current
+    ) {
+      const interval = Number.parseInt(intervalText.current.value);
+      const plantName = plantNameText.current.value;
+      const plantType = plantTypeText.current.value;
+      const updatedPlants = plants.map((p) =>
+        p.id === plantToEdit?.id
+          ? {
+              ...p,
+              name: plantName,
+              type: plantType,
+              interval: interval,
+              imageUrl: imageBase64,
+            }
+          : p,
+      );
+      setPlants(updatedPlants);
+      localStorage.setItem("plants", JSON.stringify(updatedPlants));
+    }
+  };
+
   return (
     <>
       <h1>Blommor</h1>
@@ -83,8 +133,14 @@ function App() {
         </div>
 
         <button onClick={handleAddPlant}>Add plant</button>
+        <button onClick={acceptEditPlant}>Edit plant</button>
       </div>
-      <PlantCardList plants={plants} onDelete={DeletePlant} />
+      <PlantCardList
+        plants={plants}
+        onDelete={DeletePlant}
+        onWatered={handleWaterPlant}
+        onEdit={handleEditPlant}
+      />
     </>
   );
 }

@@ -21,7 +21,9 @@ export const AddPlant = (
   return NewPlant;
 };
 
-export const EditPlant = () => {};
+export const EditPlant = () => {
+  
+};
 
 export const GetAllPlants = (): Plant[] => {
   return JSON.parse(localStorage.getItem("plants") || "[]");
