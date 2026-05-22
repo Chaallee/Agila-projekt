@@ -2,15 +2,21 @@ import { useEffect, useRef, useState } from "react";
 import { AddPlant, GetAllPlants } from "./services/plantService";
 import type { Plant } from "./types/plant";
 import PlantCardList from "./components/PlantCardList";
+import "./App.css"
+
 function App() {
   const [imageBase64, setImageBase64] = useState("");
   const [plants, setPlants] = useState<Plant[]>(GetAllPlants());
   const [plantToEdit, setPlantToEdit] = useState<Plant>();
 
+  const titleText = useRef<HTMLParagraphElement>(null);
   const plantNameText = useRef<HTMLInputElement>(null);
   const plantTypeText = useRef<HTMLInputElement>(null);
   const intervalText = useRef<HTMLInputElement>(null);
   const imageInputRef = useRef<HTMLInputElement>(null);
+
+  const addPlantButton = useRef<HTMLButtonElement>(null);
+  const editButtonsContainer = useRef<HTMLDivElement>(null);
 
   const HandleImageChange = () => {
     const file = imageInputRef.current?.files?.[0];
@@ -67,9 +73,23 @@ function App() {
   };
 
   const handleEditPlant = (plant: Plant) => {
-    if (plantNameText.current) {
+    if (
+      plantNameText.current &&
+      plantTypeText.current &&
+      intervalText.current &&
+      titleText.current &&
+      addPlantButton.current &&
+      editButtonsContainer.current
+    ) {
       plantNameText.current.value = plant.name;
+      plantTypeText.current.value = plant.type;
+      intervalText.current.value = plant.interval.toString();
+      setImageBase64(plant.imageURL);
       setPlantToEdit(plant);
+
+      titleText.current.textContent = "Edit plant";
+      addPlantButton.current.style.display = "none";
+      editButtonsContainer.current.style.display = "block"
     }
   };
 
@@ -78,7 +98,10 @@ function App() {
       plantNameText.current &&
       plantTypeText.current &&
       intervalText.current &&
-      imageInputRef.current
+      imageInputRef.current &&
+      titleText.current &&
+      addPlantButton.current &&
+      editButtonsContainer.current
     ) {
       const interval = Number.parseInt(intervalText.current.value);
       const plantName = plantNameText.current.value;
@@ -96,14 +119,39 @@ function App() {
       );
       setPlants(updatedPlants);
       localStorage.setItem("plants", JSON.stringify(updatedPlants));
+
+      titleText.current.textContent = "Add plant";
+      addPlantButton.current.style.display = "block";
+      editButtonsContainer.current.style.display = "none"
     }
   };
+
+  const cancelEditPlant = () => {
+        if (
+      plantNameText.current &&
+      plantTypeText.current &&
+      intervalText.current &&
+      imageInputRef.current &&
+      titleText.current &&
+      addPlantButton.current &&
+      editButtonsContainer.current
+    ) {
+      plantNameText.current.value = "";
+      plantTypeText.current.value = "";
+      intervalText.current.value = "";
+      setImageBase64("");
+
+      titleText.current.textContent = "Add plant";
+      addPlantButton.current.style.display = "block";
+      editButtonsContainer.current.style.display = "none"
+    }
+  }
 
   return (
     <>
       <h1>Blommor</h1>
       <div>
-        <h1>Add plant</h1>
+        <h1 ref={titleText}>Add plant</h1>
 
         <div className="field">
           <p>Plant name</p>
@@ -132,8 +180,11 @@ function App() {
           {imageBase64 && <img width={50} height={50} src={imageBase64} />}
         </div>
 
-        <button onClick={handleAddPlant}>Add plant</button>
-        <button onClick={acceptEditPlant}>Edit plant</button>
+        <button ref={addPlantButton} onClick={handleAddPlant}>Add plant</button>
+        <div ref={editButtonsContainer} className="editButtonsContainer">
+          <button onClick={acceptEditPlant}>Edit plant</button>
+          <button onClick={cancelEditPlant}>Cancel edit</button>
+        </div>
       </div>
       <PlantCardList
         plants={plants}
