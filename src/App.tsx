@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import "./App.css";
 import { AddPlant, GetAllPlants } from "./services/plantService";
 import type { Plant } from "./types/plant";
 import PlantCardList from "./components/PlantCardList";
@@ -89,7 +90,7 @@ function App() {
 
       titleText.current.textContent = "Edit plant";
       addPlantButton.current.style.display = "none";
-      editButtonsContainer.current.style.display = "block"
+      editButtonsContainer.current.style.display = "block";
     }
   };
 
@@ -130,12 +131,12 @@ function App() {
       setPlantToEdit(undefined);
       titleText.current.textContent = "Add plant";
       addPlantButton.current.style.display = "block";
-      editButtonsContainer.current.style.display = "none"
+      editButtonsContainer.current.style.display = "none";
     }
   };
 
   const cancelEditPlant = () => {
-        if (
+    if (
       plantNameText.current &&
       plantTypeText.current &&
       intervalText.current &&
@@ -151,67 +152,66 @@ function App() {
 
       titleText.current.textContent = "Add plant";
       addPlantButton.current.style.display = "block";
-      editButtonsContainer.current.style.display = "none"
+      editButtonsContainer.current.style.display = "none";
     }
-  }
+  };
 
   return (
     <>
       <h1>Blommor</h1>
       <div>
-        <h1 ref={titleText}>Add plant</h1>
+        <div className="container">
+          <div className="form-section">
+            <h1 ref={titleText}>Add plant</h1>
 
-      <div className="container">
-        <div className="form-section">
-          <h1>Add plant</h1>
+            <div className="field">
+              <p>Plant name</p>
+              <input type="text" ref={plantNameText} />
+            </div>
 
-          <div className="field">
-            <p>Plant name</p>
-            <input type="text" ref={plantNameText} />
+            <div className="field">
+              <p>Plant type</p>
+              <input type="text" ref={plantTypeText} />
+            </div>
+
+            <div className="field">
+              <p>Watering interval</p>
+              <input type="number" ref={intervalText} />
+            </div>
+
+            <div className="field">
+              <p>Image URL</p>
+              <input
+                type="file"
+                accept="image/*"
+                ref={imageInputRef}
+                onChange={HandleImageChange}
+              />
+
+              {imageBase64 && <img width={50} height={50} src={imageBase64} />}
+            </div>
+
+            <div className="form-actions">
+              <button ref={addPlantButton} onClick={handleAddPlant}>
+                Add plant
+              </button>
+              <div ref={editButtonsContainer} className="editButtonsContainer">
+                <button onClick={acceptEditPlant}>Save edit</button>
+                <button onClick={cancelEditPlant}>Cancel edit</button>
+              </div>
+            </div>
           </div>
 
-          <div className="field">
-            <p>Plant type</p>
-            <input type="text" ref={plantTypeText} />
-          </div>
-
-          <div className="field">
-            <p>Watering interval</p>
-            <input type="number" ref={intervalText} />
-          </div>
-
-          <div className="field">
-            <p>Image URL</p>
-            <input
-              type="file"
-              accept="image/*"
-              ref={imageInputRef}
-              onChange={HandleImageChange}
+          <div className="list-section">
+            <PlantCardList
+              plants={plants}
+              onDelete={DeletePlant}
+              onWatered={handleWaterPlant}
+              onEdit={handleEditPlant}
             />
-
-            {imageBase64 && <img width={50} height={50} src={imageBase64} />}
           </div>
-
-          <button onClick={handleAddPlant}>Add plant</button>
-          <button onClick={acceptEditPlant}>Edit plant</button>
-        </div>
-
-        <div className="list-section">
-          <PlantCardList
-            plants={plants}
-            onDelete={DeletePlant}
-            onWatered={handleWaterPlant}
-            onEdit={handleEditPlant}
-          />
-        </div>
-
-        <button ref={addPlantButton} onClick={handleAddPlant}>Add plant</button>
-        <div ref={editButtonsContainer} className="editButtonsContainer">
-          <button onClick={acceptEditPlant}>Edit plant</button>
-          <button onClick={cancelEditPlant}>Cancel edit</button>
         </div>
       </div>
-    </div>
     </>
   );
 }
