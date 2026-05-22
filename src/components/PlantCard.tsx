@@ -15,6 +15,7 @@ const PlantCard = ({ plant, onDelete }: PlantCardProps) => {
       {plant.imageURL && (
         <img src={plant.imageURL} className="plantImage"></img>
       )}
+      <button onClick={() => (plant.isWatered = true)}>Vattnad</button>
       <button onClick={() => onDelete(plant)}>Ta bort</button>
     </div>
   );

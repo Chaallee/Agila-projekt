@@ -49,6 +49,11 @@ function App() {
     localStorage.setItem("plants", JSON.stringify(updatedPlants));
   };
 
+  const handleWaterPlant = (plant: Plant) => {
+    plant.isWatered = true;
+    localStorage.setItem("plants", JSON.stringify(plants));
+  };
+
   return (
     <>
       <h1>Blommor</h1>
