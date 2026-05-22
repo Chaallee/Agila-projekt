@@ -1,3 +1,7 @@
+Mob-programmeringsprojekt skapat av Charlie, Kevin, Daniel & Adam.
+
+
+
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
