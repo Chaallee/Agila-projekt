@@ -17,3 +17,7 @@
 .right {
   flex: 1;
 }
+
+.editButtonsContainer {
+  display: none;
+}
