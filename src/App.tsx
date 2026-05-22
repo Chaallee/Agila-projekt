@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import { AddPlant, GetAllPlants } from "./services/plantService";
 import type { Plant } from "./types/plant";
 import PlantCardList from "./components/PlantCardList";
+import "./App.css";
+
 function App() {
   const [imageBase64, setImageBase64] = useState("");
   const [plants, setPlants] = useState<Plant[]>(GetAllPlants());
@@ -102,45 +104,51 @@ function App() {
   return (
     <>
       <h1>Blommor</h1>
-      <div>
-        <h1>Add plant</h1>
 
-        <div className="field">
-          <p>Plant name</p>
-          <input type="text" ref={plantNameText}></input>
+      <div className="container">
+        <div className="form-section">
+          <h1>Add plant</h1>
+
+          <div className="field">
+            <p>Plant name</p>
+            <input type="text" ref={plantNameText} />
+          </div>
+
+          <div className="field">
+            <p>Plant type</p>
+            <input type="text" ref={plantTypeText} />
+          </div>
+
+          <div className="field">
+            <p>Watering interval</p>
+            <input type="number" ref={intervalText} />
+          </div>
+
+          <div className="field">
+            <p>Image URL</p>
+            <input
+              type="file"
+              accept="image/*"
+              ref={imageInputRef}
+              onChange={HandleImageChange}
+            />
+
+            {imageBase64 && <img width={50} height={50} src={imageBase64} />}
+          </div>
+
+          <button onClick={handleAddPlant}>Add plant</button>
+          <button onClick={acceptEditPlant}>Edit plant</button>
         </div>
 
-        <div className="field">
-          <p>Plant type</p>
-          <input type="text" ref={plantTypeText}></input>
-        </div>
-
-        <div className="field">
-          <p>Watering interval</p>
-          <input type="number" ref={intervalText}></input>
-        </div>
-
-        <div className="field">
-          <p>Image URL</p>
-          <input
-            type="file"
-            accept="image/*"
-            ref={imageInputRef}
-            onChange={HandleImageChange}
+        <div className="list-section">
+          <PlantCardList
+            plants={plants}
+            onDelete={DeletePlant}
+            onWatered={handleWaterPlant}
+            onEdit={handleEditPlant}
           />
-
-          {imageBase64 && <img width={50} height={50} src={imageBase64} />}
         </div>
-
-        <button onClick={handleAddPlant}>Add plant</button>
-        <button onClick={acceptEditPlant}>Edit plant</button>
       </div>
-      <PlantCardList
-        plants={plants}
-        onDelete={DeletePlant}
-        onWatered={handleWaterPlant}
-        onEdit={handleEditPlant}
-      />
     </>
   );
 }
