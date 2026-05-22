@@ -5,9 +5,10 @@ interface PlantCardProps {
   plant: Plant;
   onDelete: (plant: Plant) => void;
   onWatered: (plant: Plant) => void;
+  onEdit: (plant: Plant) => void;
 }
 
-const PlantCard = ({ plant, onDelete, onWatered }: PlantCardProps) => {
+const PlantCard = ({ plant, onDelete, onWatered, onEdit }: PlantCardProps) => {
   return (
     <div className="card">
       <p>{plant.name}</p>
@@ -17,7 +18,8 @@ const PlantCard = ({ plant, onDelete, onWatered }: PlantCardProps) => {
       {plant.imageURL && (
         <img src={plant.imageURL} className="plantImage"></img>
       )}
-      <button onClick={() => onWatered(plant) }>Vattnad</button>
+      <button onClick={() => onEdit(plant)}>Redigera</button>
+      <button onClick={() => onWatered(plant)}>Vattnad</button>
       <button onClick={() => onDelete(plant)}>Ta bort</button>
     </div>
   );
