@@ -85,6 +85,7 @@ function App() {
       const interval = Number.parseInt(intervalText.current.value);
       const plantName = plantNameText.current.value;
       const plantType = plantTypeText.current.value;
+
       const updatedPlants = plants.map((p) =>
         p.id === plantToEdit?.id
           ? {
@@ -98,6 +99,14 @@ function App() {
       );
       setPlants(updatedPlants);
       localStorage.setItem("plants", JSON.stringify(updatedPlants));
+
+      plantNameText.current.value = "";
+      plantTypeText.current.value = "";
+      intervalText.current.value = "";
+      imageInputRef.current.value = "";
+
+      setImageBase64("");
+      setPlantToEdit(undefined);
     }
   };
 
