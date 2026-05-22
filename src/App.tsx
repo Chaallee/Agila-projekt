@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import "./App.css";
 import { AddPlant, GetAllPlants } from "./services/plantService";
 import type { Plant } from "./types/plant";
 import PlantCardList from "./components/PlantCardList";
@@ -132,8 +133,10 @@ function App() {
           {imageBase64 && <img width={50} height={50} src={imageBase64} />}
         </div>
 
-        <button onClick={handleAddPlant}>Add plant</button>
-        <button onClick={acceptEditPlant}>Edit plant</button>
+        <div className="form-actions">
+          <button onClick={handleAddPlant}>Add plant</button>
+          <button onClick={acceptEditPlant}>Edit plant</button>
+        </div>
       </div>
       <PlantCardList
         plants={plants}
